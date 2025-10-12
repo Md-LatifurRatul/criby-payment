@@ -1,0 +1,5 @@
+package com.example.criby_payment
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
