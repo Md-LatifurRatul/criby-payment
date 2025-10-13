@@ -1,3 +1,4 @@
+import 'package:criby_payment/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class CribyApp extends StatelessWidget {
@@ -5,6 +6,30 @@ class CribyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
+
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+
+        inputDecorationTheme: textFormFieldDecoration(),
+      ),
+    );
+  }
+
+  Widget textFormFieldDecoration() {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.white,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0x330C0310), width: 2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.blue, width: 2.0),
+      ),
+    );
   }
 }

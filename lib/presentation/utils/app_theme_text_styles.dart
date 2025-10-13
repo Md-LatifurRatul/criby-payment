@@ -22,13 +22,13 @@ class AppThemeTextStyles {
     color: Color(0xFF0C0310),
   );
 
-  static const bodySectionSemiBold = TextStyle(
+  static final bodySectionSemiBold = TextStyle(
     fontFamily: _plusJakartaFonts,
     fontWeight: FontWeight.w600,
     fontSize: 16,
     height: 22 / 16,
     letterSpacing: 0,
-    color: Color(0xFF0C0310),
+    color: Color(0x4D0C0310),
   );
 
   static const bodySectionMedium = TextStyle(
