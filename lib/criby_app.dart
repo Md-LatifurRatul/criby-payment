@@ -1,4 +1,4 @@
-import 'package:criby_payment/presentation/screens/login_screen.dart';
+import 'package:criby_payment/presentation/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 
 class CribyApp extends StatelessWidget {
@@ -8,8 +8,9 @@ class CribyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
 
+      // home: LoginScreen(),
+      home: RegistrationScreen(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
 

@@ -59,14 +59,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
 
                   CustomElevatedButton(
-                    formKey: _formKey,
                     buttonTextName: "Login",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {}
+                    },
                   ),
                   const SizedBox(height: 20),
                   BottomSectionAuth(
                     bottomSpanText: "Don't have an account? ",
 
                     bottomSpanClickText: "Create One",
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
               ),
@@ -167,5 +172,12 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _obsecurePassword = !_obsecurePassword;
     });
+  }
+
+  @override
+  void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
+    super.dispose();
   }
 }

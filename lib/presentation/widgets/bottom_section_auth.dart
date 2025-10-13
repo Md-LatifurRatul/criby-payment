@@ -7,9 +7,11 @@ class BottomSectionAuth extends StatelessWidget {
     super.key,
     required this.bottomSpanText,
     required this.bottomSpanClickText,
+    this.onTap,
   });
   final String bottomSpanText;
   final String bottomSpanClickText;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class BottomSectionAuth extends StatelessWidget {
               style: AppThemeTextStyles.bodySectionSemiBold.copyWith(
                 color: Color(0xff43A3F2),
               ),
-              recognizer: TapGestureRecognizer()..onTap = () {},
+              recognizer: TapGestureRecognizer()..onTap = onTap,
             ),
           ],
         ),
