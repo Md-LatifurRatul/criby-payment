@@ -37,6 +37,6 @@ class AppThemeTextStyles {
     fontSize: 14,
     height: 20 / 16,
     letterSpacing: 0,
-    color: Color(0xFF0C0310),
+    color: Color.fromRGBO(12, 3, 16, 0.3),
   );
 }

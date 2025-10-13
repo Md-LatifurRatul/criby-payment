@@ -69,9 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     bottomSpanText: "Don't have an account? ",
 
                     bottomSpanClickText: "Create One",
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () {},
                   ),
                 ],
               ),

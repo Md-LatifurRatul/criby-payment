@@ -8,8 +8,6 @@ class CribyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      // home: LoginScreen(),
       home: RegistrationScreen(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
