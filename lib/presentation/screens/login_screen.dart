@@ -1,3 +1,4 @@
+import 'package:criby_payment/presentation/screens/registration_screen.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/bottom_section_auth.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
@@ -69,7 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     bottomSpanText: "Don't have an account? ",
 
                     bottomSpanClickText: "Create One",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegistrationScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

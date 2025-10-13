@@ -56,7 +56,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                   const SizedBox(height: 15),
                   CustomElevatedButton(
                     buttonTextName: "Resend OTP",
-                    buttonColor: Colors.black,
+                    buttonTextColor: Colors.black,
                     buttonBGColor: Colors.blue.withValues(alpha: 0.1),
                     onPressed: () {},
                   ),

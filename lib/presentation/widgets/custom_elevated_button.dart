@@ -6,13 +6,13 @@ class CustomElevatedButton extends StatelessWidget {
     super.key,
     required this.buttonTextName,
     this.buttonBGColor = Colors.blue,
-    this.buttonColor = Colors.white,
+    this.buttonTextColor = Colors.white,
     this.onPressed,
   });
 
   final String buttonTextName;
   final Color buttonBGColor;
-  final Color buttonColor;
+  final Color buttonTextColor;
   final VoidCallback? onPressed;
 
   @override
@@ -32,7 +32,7 @@ class CustomElevatedButton extends StatelessWidget {
           buttonTextName,
           style: AppThemeTextStyles.bodyHeaderBold.copyWith(
             fontSize: 16,
-            color: buttonColor,
+            color: buttonTextColor,
           ),
         ),
       ),
