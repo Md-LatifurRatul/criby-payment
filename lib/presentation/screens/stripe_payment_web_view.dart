@@ -8,10 +8,6 @@
 // import 'package:http/http.dart' as http;
 
 // class StripePaymentWebView {
-//   static const String stripeSecretKey =
-//       "sk_test_51Rk13ECX7cWtiM720I0jg1qqWcpFTPzkVI0vhZqpOd8M6re5yMIVKMy5IaaY06EW7ppVIRP1JwZ6VvOMreEdItip00lv8TBTdW";
-//   static const String stripePublishableKey =
-//       "pk_test_51Rk13ECX7cWtiM72ZRVZCH3zV5j1lFpqCFQGLKm1cdLlbRlG9Qrc1oOVuew5hcgw0Sf1iCMaFzEOdn4STjvNBnhq00PLqyQ8Za";
 //   static const String successUrl = "https://yourapp.com/stripe-success";
 //   static const String cancelUrl = "https://yourapp.com/stripe-cancel";
 
