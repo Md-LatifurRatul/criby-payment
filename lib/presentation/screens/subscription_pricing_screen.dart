@@ -4,7 +4,6 @@ import 'package:criby_payment/data/models/network_response.dart';
 import 'package:criby_payment/data/models/pricing_data.dart';
 import 'package:criby_payment/data/services/network_caller.dart';
 import 'package:criby_payment/data/utils/api_urls.dart';
-import 'package:criby_payment/presentation/screens/stripe_payment_web_view.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
 import 'package:criby_payment/presentation/widgets/details_card.dart';
@@ -136,12 +135,12 @@ class _SubscriptionScreenState extends State<SubscriptionPricingScreen> {
                           return;
                         }
 
-                        await StripePaymentWebView.openStripeCheckout(
-                          context,
-                          planId: selectedPlanData.id!,
-                          planName: selectedPlanData.name ?? "Unknown Plan",
-                          price: selectedPlanData.price ?? 0,
-                        );
+                        // await StripePaymentWebView.openStripeCheckout(
+                        //   context,
+                        //   planId: selectedPlanData.id!,
+                        //   planName: selectedPlanData.name ?? "Unknown Plan",
+                        //   price: selectedPlanData.price ?? 0,
+                        // );
                       },
                     ),
                   ],
