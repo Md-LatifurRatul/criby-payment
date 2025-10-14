@@ -1,6 +1,14 @@
+import 'package:criby_payment/data/controller/auth_controller.dart';
+import 'package:criby_payment/data/models/network_response.dart';
+import 'package:criby_payment/data/models/user_data.dart';
+import 'package:criby_payment/data/models/user_info.dart';
+import 'package:criby_payment/data/services/network_caller.dart';
+import 'package:criby_payment/data/utils/api_urls.dart';
+import 'package:criby_payment/presentation/screens/login_screen.dart';
 import 'package:criby_payment/presentation/utils/app_assets.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
+import 'package:criby_payment/presentation/widgets/snack_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +20,18 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashBoardScreen> {
-  final String userName = "Siam Ahmed";
-  final String userEmail = "criby123******@gmail.com";
+  bool _isLogOutInProgress = false;
 
   int _selectedIndex = 0;
+
+  UserData? _userData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfo();
+  }
 
   void _onItemTapped(int index) {
     if (index != 2) {
@@ -25,29 +41,64 @@ class _DashboardScreenState extends State<DashBoardScreen> {
     }
   }
 
+  Future<void> _getUserInfo() async {
+    final NetworkResponse response = await NetworkCaller.getRequest(
+      url: ApiUrls.getUserUrl,
+    );
+    if (response.isSucess && response.responseData != null) {
+      final parsedData = UserInfo.fromJson(response.responseData);
+      _userData = parsedData.data as UserData?;
+      _isLoading = false;
+      setState(() {});
+    } else {
+      _isLoading = false;
+      setState(() {});
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(
+          context,
+          "Failed to load user data",
+          true,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildSubscriptionCard(),
-            const SizedBox(height: 200),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 24.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildSubscriptionCard(),
+                  const SizedBox(height: 200),
 
-            CustomElevatedButton(
-              buttonTextName: "Logout",
+                  Visibility(
+                    visible: _isLogOutInProgress == false,
+                    replacement: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    child: CustomElevatedButton(
+                      buttonTextName: "Logout",
 
-              onPressed: () {},
+                      onPressed: () {
+                        _logOutUser();
+                      },
 
-              buttonBGColor: Color(0xFFF56565),
+                      buttonBGColor: Color(0xFFF56565),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
 
       bottomNavigationBar: _buildBottomNavBar(),
 
@@ -82,13 +133,16 @@ class _DashboardScreenState extends State<DashBoardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    userName,
+                    _userData?.username ?? "",
                     style: AppThemeTextStyles.bodyHeaderBold.copyWith(
                       fontSize: 17,
                       height: 1,
                     ),
                   ),
-                  Text(userEmail, style: AppThemeTextStyles.bodySectionMedium),
+                  Text(
+                    _userData?.email ?? "",
+                    style: AppThemeTextStyles.bodySectionMedium,
+                  ),
                 ],
               ),
             ],
@@ -125,6 +179,7 @@ class _DashboardScreenState extends State<DashBoardScreen> {
   }
 
   Widget _buildSubscriptionCard() {
+    final subscription = _userData?.activeSubscription;
     return Card(
       elevation: 0,
 
@@ -138,13 +193,17 @@ class _DashboardScreenState extends State<DashBoardScreen> {
             Image.asset(AppAssets.appCrownImage, height: 70, width: 67),
             const SizedBox(height: 15),
             Text(
-              'Subscription: Active (Pro Plan)',
+              subscription == null
+                  ? "No Active Subscription"
+                  : 'Subscription: Active (${subscription['plan_name']})',
               textAlign: TextAlign.center,
               style: AppThemeTextStyles.bodyHeaderBold.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 6),
             Text(
-              'Next Billing: 08 Oct 2026',
+              subscription == null
+                  ? 'Upgrade your plan to get premium access'
+                  : 'Next Billing:  ${subscription['next_billing_date']}',
               textAlign: TextAlign.center,
               style: AppThemeTextStyles.bodySectionMedium,
             ),
@@ -207,5 +266,37 @@ class _DashboardScreenState extends State<DashBoardScreen> {
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
+  }
+
+  Future<void> _logOutUser() async {
+    _isLogOutInProgress = true;
+    setState(() {});
+
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: ApiUrls.logOutUserUrl,
+    );
+
+    _isLogOutInProgress = false;
+    setState(() {});
+
+    if (response.isSucess) {
+      final data = response.responseData;
+      final loginToken = data["data"]?["api_token"];
+      if (loginToken != null) {
+        AuthController.clearToken();
+      }
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(context, "Successfully logout");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
+    } else {
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(context, "Logout failed", true);
+      }
+    }
   }
 }

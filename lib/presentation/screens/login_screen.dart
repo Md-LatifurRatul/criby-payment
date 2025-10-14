@@ -1,9 +1,15 @@
+import 'package:criby_payment/data/controller/auth_controller.dart';
+import 'package:criby_payment/data/models/network_response.dart';
+import 'package:criby_payment/data/services/network_caller.dart';
+import 'package:criby_payment/data/utils/api_urls.dart';
 import 'package:criby_payment/presentation/screens/registration_screen.dart';
+import 'package:criby_payment/presentation/screens/subscription_pricing_screen.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/bottom_section_auth.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
 import 'package:criby_payment/presentation/widgets/header_logo.dart';
 import 'package:criby_payment/presentation/widgets/icon_line_field.dart';
+import 'package:criby_payment/presentation/widgets/snack_message.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
       TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  bool _isLoginInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +67,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildRememberAndForgetSection(),
                   const SizedBox(height: 20),
 
-                  CustomElevatedButton(
-                    buttonTextName: "Login",
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
-                    },
+                  Visibility(
+                    visible: _isLoginInProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: CustomElevatedButton(
+                      buttonTextName: "Login",
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          loginUser();
+                        }
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
                   BottomSectionAuth(
@@ -178,6 +192,51 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _obsecurePassword = !_obsecurePassword;
     });
+  }
+
+  Future<void> loginUser() async {
+    _isLoginInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> inputVerifyLoginUser = {
+      "email": _emailTextEditingController.text.trim(),
+
+      "password": _passwordTextEditingController.text,
+    };
+
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: ApiUrls.loginUserUrl,
+      body: inputVerifyLoginUser,
+    );
+
+    _isLoginInProgress = false;
+    setState(() {});
+
+    if (response.isSucess) {
+      final data = response.responseData;
+      final loginToken = data["data"]?["api_token"];
+      if (loginToken != null) {
+        AuthController.setApiToken(loginToken);
+      }
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(context, "Login Successfull");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubscriptionPricingScreen(),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(
+          context,
+          "Login Failed/Try Again!",
+          true,
+        );
+      }
+    }
   }
 
   @override

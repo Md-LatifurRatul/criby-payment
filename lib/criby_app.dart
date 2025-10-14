@@ -1,14 +1,18 @@
-import 'package:criby_payment/presentation/screens/registration_screen.dart';
+import 'package:criby_payment/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class CribyApp extends StatelessWidget {
   const CribyApp({super.key});
 
+  static GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RegistrationScreen(),
+      navigatorKey: CribyApp.navigationKey,
+      // home: RegistrationScreen(),
+      home: LoginScreen(),
 
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,

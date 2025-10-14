@@ -1,9 +1,14 @@
+import 'package:criby_payment/data/models/network_response.dart';
+import 'package:criby_payment/data/services/network_caller.dart';
+import 'package:criby_payment/data/utils/api_urls.dart';
+import 'package:criby_payment/presentation/screens/login_screen.dart';
 import 'package:criby_payment/presentation/screens/otp_verify_screen.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/bottom_section_auth.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
 import 'package:criby_payment/presentation/widgets/header_logo.dart';
 import 'package:criby_payment/presentation/widgets/icon_line_field.dart';
+import 'package:criby_payment/presentation/widgets/snack_message.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -27,6 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   final TextEditingController _confirmPasswordTextEditingController =
       TextEditingController();
+  bool _isRegistrationInProgress = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   @override
@@ -67,21 +73,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                   const SizedBox(height: 20),
 
-                  CustomElevatedButton(
-                    buttonTextName: "Login",
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
-                    },
+                  Visibility(
+                    visible: _isRegistrationInProgress == false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: CustomElevatedButton(
+                      buttonTextName: "Next",
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _registrationUser();
+                        }
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
                   BottomSectionAuth(
                     bottomSpanText: "Already have an account? ",
 
-                    bottomSpanClickText: "Next",
+                    bottomSpanClickText: "Login",
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => OtpVerifyScreen()),
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
                       );
                     },
                   ),
@@ -180,6 +192,53 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         prefixIcon: IconLineField(textFieldIcon: Icons.lock_outline),
       ),
     );
+  }
+
+  Future<void> _registrationUser() async {
+    _isRegistrationInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> inputRegistrationInfo = {
+      "username": _fullNameTextEditingController.text.trim(),
+      "email": _emailTextEditingController.text.trim(),
+      "phone": _phoneTextEditingController.text.trim(),
+      "password": _passwordTextEditingController.text,
+      "terms": true,
+    };
+
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: ApiUrls.registrationUrl,
+      body: inputRegistrationInfo,
+    );
+
+    _isRegistrationInProgress = false;
+    setState(() {});
+
+    if (response.isSucess) {
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(
+          context,
+          "Account Created Succesfully, Verify Your Email",
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpVerifyScreen(
+              userVerifyEmail: _emailTextEditingController.text,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        SnackMessage.showSnackBarMessage(
+          context,
+          "Failed to Account Created",
+          true,
+        );
+      }
+    }
   }
 
   @override
