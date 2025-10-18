@@ -4,6 +4,7 @@ import 'package:criby_payment/data/models/network_response.dart';
 import 'package:criby_payment/data/models/pricing_data.dart';
 import 'package:criby_payment/data/services/network_caller.dart';
 import 'package:criby_payment/data/utils/api_urls.dart';
+import 'package:criby_payment/presentation/screens/subcription_activation_screen.dart';
 import 'package:criby_payment/presentation/utils/app_theme_text_styles.dart';
 import 'package:criby_payment/presentation/widgets/custom_elevated_button.dart';
 import 'package:criby_payment/presentation/widgets/details_card.dart';
@@ -134,6 +135,14 @@ class _SubscriptionScreenState extends State<SubscriptionPricingScreen> {
                           );
                           return;
                         }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const SubcriptionActivationScreen(),
+                          ),
+                        );
 
                         // await StripePaymentWebView.openStripeCheckout(
                         //   context,
